@@ -1,5 +1,4 @@
 import React from 'react' 
-const fs = require('fs')
 
 export const SearchBar = () => {
     const [search, setSearch] = React.useState<string>('')
@@ -9,13 +8,6 @@ export const SearchBar = () => {
     const handleSubmit = () => {
       data.push(search)
       console.log(data)
-
-      fs.writeFile('query.json', data, (err: string) => {
-        if (err) {
-            throw err;
-        }
-        console.log("JSON data is saved.");
-    });
     }
 
   //POST
