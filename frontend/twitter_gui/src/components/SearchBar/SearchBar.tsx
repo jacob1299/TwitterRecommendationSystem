@@ -1,34 +1,61 @@
 import React from 'react' 
+const fs = require('fs')
 
 export const SearchBar = () => {
-    const [search, setSearch] = React.useState<any>('')
+    const [search, setSearch] = React.useState<string>('')
 
-    
+    let data: any = []
+
     const handleSubmit = () => {
-        post_query(search)
-        console.log(search)
+      data.push(search)
+      console.log(data)
+
+      fs.writeFile('query.json', data, (err: string) => {
+        if (err) {
+            throw err;
+        }
+        console.log("JSON data is saved.");
+    });
     }
 
-  async function post_query(search: any) {
-        const response = await fetch('http://localhost:5000/api/search_query', {
-            method: 'POST', 
-            mode: 'cors', 
-            cache: 'no-cache', 
-            credentials: 'same-origin', 
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer', 
-            body: JSON.stringify(search)
-          }).then(response => console.log(response))
-    }
+  //POST
+  // async function post_query(search: string) {
+  //      await fetch('http://localhost:5000/api/search_query', {
+  //           method: 'POST', 
+  //           mode: 'cors', 
+  //           credentials: 'same-origin', 
+  //           headers: {
+  //             'Content-Type': 'application/json', 
+  //             'Accept': 'appliction/json'
+  //           },
+  //           body: JSON.stringify({'query': search})
+  //         }).then(response => response.json())
+  //         .then(data => console.log(data))
+  // }
 
+  //PATCH
+//   async function patch_query(search: string) {
+//     await fetch('http://localhost:5000/api/search_query', {
+//          method: 'PATCH', 
+//          mode: 'cors', 
+//          credentials: 'same-origin', 
+//          headers: {
+//            'Content-Type': 'application/json', 
+//            'Accept': 'appliction/json'
+//          },
+//          body: JSON.stringify({'query': search})
+//        }).then(response => response.json())
+//        .then(data => console.log(data))
+// }
 
+//   //GET
+//   async function get_query() {
+//     await fetch('http://localhost:5000/api/search_query').then(response => response.json())
+//     .then(data => console.log(data))
+//   }
 
     return (
             <div className='pt-8 mx-auto'>
-                <h1>{search}</h1>
                 <input className='border-2 border-blue-400 rounded-lg mr-2' type='text' id='search' name='search' value={search} onChange={e => setSearch(e.target.value)}/>
                 <button className='border-2 border-black text-white rounded-lg px-2 bg-blue-400' onClick={() => handleSubmit()}>Search</button>
             </div>
