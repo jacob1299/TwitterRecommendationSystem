@@ -58,7 +58,7 @@ second = 0
 
 top = 0
 
-q_vector = 0
+q_vector = None
 
 qnew = None
 
@@ -169,8 +169,38 @@ def bm25():
 
 
 
-def recommend(Idnum):
-    get_similar_tweets(docs[Idnum], df)
+def recommend():
+    global qlike_vector
+    global q_vector
+    
+    q_vector = qlike_vector
+    
+    sub = 0
+        
+    
+    for i in range(rows):
+        sim[i] = np.dot(df.loc[:,i].values, q_vector)/np.linalg.norm(df.loc[:, i])*np.linalg.norm(q_vector)
+
+    sim_sorted = sorted(sim.items(), key = lambda x: x[1], reverse = False)
+        
+
+    
+    for k, v in sim_sorted:         
+        if v != 0.0 and v!= None :
+            global N 
+            N = N + 1
+            global second
+            second = sub
+            global top
+            top = k            
+            print("Similarity Values: ", v)
+            print("User :", users[k])
+            print("Post ID: ", k)
+            sub = k
+            print(docs[k])
+            print()
+        
+    print("-----------------\n")
         
 
 def recommendpop(num):
@@ -193,11 +223,14 @@ def bmrecommendran(num):
 
 def recommend_eu():
     global q_vector
+    global q
+    
+    q_vector = vectorizer.transform(q).toarray().reshape(df.shape[0],)
     
     q_vector = q_vector + qlike_vector
     
     for i in range(rows):
-        sim_eu[i] = np.sum(math.sqrt(sum((q_vector[i] - df.loc[:,i].values)**2)))
+        sim_eu[i] = math.sqrt(np.sum((q_vector[i] - df.loc[:,i].values)**2))
     sim_sorted_eu = sorted(sim_eu.items(), key = lambda x: x[1], reverse = True)
     
     for k, v in sim_sorted_eu:         
@@ -207,7 +240,7 @@ def recommend_eu():
             print("Post ID: ", k)
             print(docs[k])
             print()
-        
+
     
 def like(IDnum):
     
@@ -217,7 +250,7 @@ def like(IDnum):
     
     qlike = docs[IDnum]
     qlike = [qlike]
-    qlike_vector = 0.01 * vectorizer.transform(qlike).toarray().reshape(df.shape[0],)
+    qlike_vector = 0.9 * qlike_vector + 0.1 * vectorizer.transform(qlike).toarray().reshape(df.shape[0],)
     qnew = 1
     
     
