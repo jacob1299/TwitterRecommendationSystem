@@ -167,12 +167,9 @@ def bm25():
             print()
 
 
-
-
 def recommend():
-    global qlike_vector
     global q_vector
-    
+    global qlike_vector
     q_vector = qlike_vector
     
     sub = 0
@@ -201,10 +198,15 @@ def recommend():
             print()
         
     print("-----------------\n")
+
+
+
+def recommendsal(Idnum):
+    get_similar_tweets(docs[Idnum], df)
         
 
 def recommendpop(num):
-    recommend(top)
+    recommendsal(top)
     for i in range(num):
         get_similar_tweets(docs[second], df)
 
@@ -214,7 +216,7 @@ def bmrecommend(Idnum):
         
 
 def bmrecommendran(num):
-    recommend(top)
+    recommendsal(top)
     bmrecommend(top)
     for i in range(num):
         get_similar_tweets(docs[second], df)
